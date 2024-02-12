@@ -144,6 +144,7 @@ void APP_Tasks ( void )
         /* Application's initial state. */
         case APP_STATE_INIT:
         {
+            appData.last_message = 0;
             bool appInitialized = true;
             //appData.appQueue = xQueueCreate( 10, sizeof(APP_Msg_T) );
             if(app_P2P_Phy_Init() != true)
@@ -162,10 +163,21 @@ void APP_Tasks ( void )
 
         case APP_STATE_SERVICE_TASKS:
         {
-            if (OSAL_QUEUE_Receive(&appData.appQueue, &appMsg, OSAL_WAIT_FOREVER))
-            {
+//            if (OSAL_QUEUE_Receive(&appData.appQueue, &appMsg, OSAL_WAIT_FOREVER))
+//            {
 //                app_P2P_Phy_TaskHandler(p_appMsg);    // JOE EDIT OR ADDITION
+//            }
+            
+            TickType_t current_ticks = xTaskGetTickCount();
+            if (current_ticks - appData.last_message < 100)
+            {
+                USER_LED_Clear();
             }
+            else
+            {
+                USER_LED_Set();
+            }
+
             break;
         }
 

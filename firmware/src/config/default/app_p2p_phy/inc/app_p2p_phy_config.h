@@ -43,6 +43,8 @@
 #define CHANNEL_TRANSMIT_RECEIVE            26U     // JOE EDIT OR ADDITION
 #define SRC_ADDR                            0x2U    // JOE EDIT OR ADDITION
 #define IEEE_ADDR                           0x2U    // JOE EDIT OR ADDITION
+#define DST_ADDR                            0x1U    // JOE EDIT OR ADDITION
+#define DST_IEEE_ADDR                       0x1U    // JOE EDIT OR ADDITION
 #define SRC_PAN_ID                          0xcafeU
 #define MAXBE                               5U
 #define MINBE                               3U
@@ -51,8 +53,6 @@
 #define CCA_MODE                            1U
 #define TRANSMIT_POWER                      12      // JOE EDIT OR ADDITION
 #define APP_PAYLOAD_BUFFER_SIZE             500U
-#define DST_ADDR                            0x1U    // JOE EDIT OR ADDITION
-#define DST_IEEE_ADDR                       0x1U    // JOE EDIT OR ADDITION
 #define NUM_OF_DEVICES                      2U      // JOE EDIT OR ADDITION
 #define ED_SCAN_DURATION                    8U
 /* === TYPES =============================================================== */

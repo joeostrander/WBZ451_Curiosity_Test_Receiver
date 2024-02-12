@@ -64,15 +64,15 @@
 	NUMBER_OF_TOTAL_STACK_TIMERS)
 #endif /* (!define TOTAL_NUMBER_OF_TIMERS) */
 
-#define NUMBER_OF_LARGE_STACK_BUFS	(3U)
+#define NUMBER_OF_LARGE_STACK_BUFS	(20U)    // JOE EDIT OR ADDITION -- TODO: determine best and set in Harmony
 
-#define NUMBER_OF_SMALL_STACK_BUFS	(3U)
+#define NUMBER_OF_SMALL_STACK_BUFS	(20U)    // JOE EDIT OR ADDITION -- TODO: determine best and set in Harmony
 
 /** Defines the number of additional large buffers used by the application */
-#define NUMBER_OF_LARGE_APP_BUFS    (0U)
+#define NUMBER_OF_LARGE_APP_BUFS    (0U)    // JOE EDIT OR ADDITION -- TODO: determine best and set in Harmony
 
 /** Defines the number of additional small buffers used by the application */
-#define NUMBER_OF_SMALL_APP_BUFS    (0U)
+#define NUMBER_OF_SMALL_APP_BUFS    (0U)    // JOE EDIT OR ADDITION -- TODO: determine best and set in Harmony
 
 /**
  *  Defines the total number of large buffers used by the application and the

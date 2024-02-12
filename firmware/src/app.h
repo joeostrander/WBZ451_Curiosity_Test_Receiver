@@ -95,8 +95,9 @@ typedef enum
 
 typedef enum APP_MsgId_T
 {
-    APP_MSG_BLE_STACK_EVT,
-    APP_MSG_BLE_STACK_LOG,
+
+
+
     APP_MSG_ZB_STACK_EVT,
     APP_MSG_ZB_STACK_CB,
     APP_MSG_STACK_END
@@ -128,6 +129,8 @@ typedef struct
 
     /* TODO: Define any additional data used by the application. */
     OSAL_QUEUE_HANDLE_TYPE appQueue;
+    
+    TickType_t last_message;    // JOE EDIT OR ADDITION
 
 } APP_DATA;
 

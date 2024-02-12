@@ -40,6 +40,20 @@
 #include "definitions.h"
 void app_idle_task( void )
 {
+    // JOE EDIT OR ADDITION START
+    // Added at recommendation from Microchip -- JOE
+    PHY_TrxStatus_t trxStatus = PHY_GetTrxStatus(); 
+    if(trxStatus == PHY_TRX_OFF) 
+    { 
+        PHY_TrxState_t trxState = PHY_STATE_RX_ON; 
+        trxStatus = PHY_RxEnable(trxState); 
+        if(PHY_RX_ON == trxStatus) 
+        { 
+            SYS_CONSOLE_MESSAGE("\r\nTRX is switched from TRX OFF to RX ON inside idle task\r\n"); 
+        } 
+    } 
+    // JOE EDIT OR ADDITION START
+    
     uint8_t PDS_Items_Pending = PDS_GetPendingItemsCount();
     bool RF_Cal_Needed = RF_NeedCal(); // device_support library API
 
