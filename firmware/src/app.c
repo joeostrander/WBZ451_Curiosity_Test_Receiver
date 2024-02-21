@@ -55,6 +55,7 @@
 #include "app.h"
 #include "definitions.h"
 
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -92,6 +93,7 @@ APP_DATA appData;
 // Section: Application Local Functions
 // *****************************************************************************
 // *****************************************************************************
+
 
 /* TODO:  Add any necessary local functions.
 */
@@ -149,7 +151,7 @@ void APP_Tasks ( void )
             //appData.appQueue = xQueueCreate( 10, sizeof(APP_Msg_T) );
             if(app_P2P_Phy_Init() != true)
             {
-                
+
                 appInitialized = false;
             }
 
@@ -163,21 +165,46 @@ void APP_Tasks ( void )
 
         case APP_STATE_SERVICE_TASKS:
         {
+            // JOE EDIT OR ADDITION START
 //            if (OSAL_QUEUE_Receive(&appData.appQueue, &appMsg, OSAL_WAIT_FOREVER))
-//            {
-//                app_P2P_Phy_TaskHandler(p_appMsg);    // JOE EDIT OR ADDITION
-//            }
-            
-            TickType_t current_ticks = xTaskGetTickCount();
-            if (current_ticks - appData.last_message < 100)
+            if (OSAL_QUEUE_Receive(&appData.appQueue, &appMsg, 1))
             {
-                USER_LED_Clear();
-            }
-            else
-            {
-                USER_LED_Set();
+                app_P2P_Phy_TaskHandler(p_appMsg);
             }
 
+            PHY_TrxStatus_t trxStatus = PHY_GetTrxStatus(); 
+            if(trxStatus == PHY_TRX_OFF) 
+            { 
+                PHY_TrxState_t trxState = PHY_STATE_RX_ON; 
+                trxStatus = PHY_RxEnable(trxState); 
+                if(PHY_RX_ON == trxStatus) 
+                { 
+                    SYS_CONSOLE_MESSAGE("APP TASKS: TRX switched from TRX OFF to RX ON\r\n"); 
+                } 
+            }
+            
+            // HAMMERTIME... disable & re-enable PHY every 5 minutes
+            TickType_t current_time = xTaskGetTickCount();
+            static TickType_t last_phy_off = 0;
+            if (current_time - last_phy_off > 300000)
+            {
+                last_phy_off = current_time;
+                SYS_CONSOLE_PRINT("Toggle PHY...\r\n");
+                PHY_RxEnable(PHY_STATE_TRX_OFF);
+            }
+            
+            TickType_t current_ticks = xTaskGetTickCount();
+            static TickType_t last_toggle = 0;
+            if (current_ticks - appData.last_message < 100)
+            {
+                if (current_ticks - last_toggle > 500)
+                {
+                    USER_LED_Toggle();
+                    last_toggle = current_ticks;
+                }
+            }
+            
+            // JOE EDIT OR ADDITION END
             break;
         }
 

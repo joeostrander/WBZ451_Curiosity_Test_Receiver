@@ -130,8 +130,19 @@ void qmm_queue_append(queue_t *q, buffer_t *buf)
 			/* Add the buffer at the head */
 			q->head = buf;
 		} else {
-			/* Add the buffer at the end */
-			q->tail->next = buf;
+            //JOE EDIT OR ADDITION START
+            if (NULL == q->tail)
+            {
+                q->size = 0;
+                q->head = buf;
+            }
+            else
+            {
+                /* Add the buffer at the end */
+                q->tail->next = buf;
+            }
+            //JOE EDIT OR ADDITION END
+
 		}
 
 		/* Update the list */

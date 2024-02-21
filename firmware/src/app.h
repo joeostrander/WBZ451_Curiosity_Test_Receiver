@@ -131,6 +131,8 @@ typedef struct
     OSAL_QUEUE_HANDLE_TYPE appQueue;
     
     TickType_t last_message;    // JOE EDIT OR ADDITION
+    
+    bool debug_rx;  // JOE EDIT OR ADDITION
 
 } APP_DATA;
 

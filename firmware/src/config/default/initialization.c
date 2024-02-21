@@ -412,9 +412,9 @@ void SYS_Initialize ( void* data )
 
 	GPIO_Initialize();
 
-    SERCOM0_USART_Initialize();
-
     EVSYS_Initialize();
+
+    SERCOM0_USART_Initialize();
 
     TC0_TimerInitialize();
 
@@ -479,6 +479,9 @@ void SYS_Initialize ( void* data )
 
     osalAPIList.OSAL_MemAlloc = OSAL_Malloc;
     osalAPIList.OSAL_MemFree = OSAL_Free;
+
+    // Set Power mode of the system
+    PMU_Set_Mode(PMU_MODE_BUCK_PWM);    // JOE EDIT OR ADDITION
 
 
 

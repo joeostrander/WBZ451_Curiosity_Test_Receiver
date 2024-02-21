@@ -355,7 +355,7 @@ typedef union
     This is auto generated value - Shouldn't be changed by user- Read only MACRO. 
  */
 
-#define PHY_TX_PWR_MAX                       11
+#define PHY_TX_PWR_MAX                       15
 
 // *****************************************************************************
 /* Default Antenna Gain of the Module
@@ -371,7 +371,7 @@ typedef union
     This is auto generated value - Shouldn't be changed by user- Read only MACRO. 
  */
 
-#define DEFAULT_ANT_GAIN                    3
+#define DEFAULT_ANT_GAIN                    6
 
 // *****************************************************************************
 /* Custom PHY PIB attribute ID 

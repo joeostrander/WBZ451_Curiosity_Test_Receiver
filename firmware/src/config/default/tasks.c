@@ -93,6 +93,7 @@ static void lAPP_Tasks(  void *pvParameters  )
     while(true)
     {
         APP_Tasks();
+        vTaskDelay(10);
     }
 }
 
@@ -135,9 +136,9 @@ void SYS_Tasks ( void )
         /* Create FreeRTOS task for IEEE_802154_PHY */
      (void)xTaskCreate((TaskFunction_t) _PHY_Tasks,
                 "PHY_Tasks",
-                1024,
+                PHY_RTOS_STACK_SIZE,
                 NULL,
-                1,
+                PHY_RTOS_TASK_PRIORITY,
                 &xPHY_Tasks);
 
 

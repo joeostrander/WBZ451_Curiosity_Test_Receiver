@@ -363,13 +363,17 @@ void app_P2P_Phy_TaskHandler(APP_Msg_T *appModeSwitch){
 
 void appPacketDisplay(APP_Msg_T *appMess)
 {
-//    SYS_CONSOLE_MESSAGE("\r\n RX PKT\r\n");
-    SYS_CONSOLE_MESSAGE("\r\n");
+    // JOE EDIT OR ADDITION START
+    if (!appData.debug_rx)
+        return;
+    
+    SYS_CONSOLE_PRINT("RX: ");
     for(uint8_t i = 1; i <= appMess->msgData[0]; i++)
     {
-        SYS_CONSOLE_PRINT("%c",appMess->msgData[i]);
+        SYS_CONSOLE_PRINT("%02X ",appMess->msgData[i]);
     }
     SYS_CONSOLE_MESSAGE("\r\n");
+    // JOE EDIT OR ADDITION END
 }
 //If device index is 0xff/255 all the valid entries in the table will be displayed
 void app_P2P_Phy_GetDeviceTableInfo(uint8_t dev_index)
@@ -1044,6 +1048,9 @@ void PHY_TxDoneCallback(PHY_Retval_t status, PHY_FrameInfo_t *frame)
 
 void PHY_RxFrameCallback(PHY_FrameInfo_t *rxFrame)
 {
+    APP_Msg_T *p_appMes;
+    APP_Msg_T appMes;
+    p_appMes = &appMes;
     uint8_t recBuffer[LARGE_BUFFER_SIZE], seqNumber=0;
     memset(recBuffer, 0, sizeof(recBuffer));
     uint8_t payloadLength = (uint8_t)rxFrame->mpdu[0];
@@ -1054,8 +1061,10 @@ void PHY_RxFrameCallback(PHY_FrameInfo_t *rxFrame)
     int8_t recRSSI =  (int8_t )(rxFrame->mpdu[payloadLength + LQI_LEN + ED_VAL_LEN]) + PHY_GetRSSIBaseVal();
     uint8_t LQI = rxFrame->mpdu[payloadLength + LQI_LEN];
     seqNumber = rxFrame->mpdu[3];
+    seqNumber = seqNumber;
     // Free-up the buffer which was used for reception once the frame is extracted.
 	bmm_buffer_free(rxFrame->buffer_header);
+    
     payloadLength = payloadLength - appNwkParam.frameOverHead;
 // JOE EDIT OR ADDITION START
 //    SYS_CONSOLE_PRINT("\r\nRXPKT <pktno: %d>\n", seqNumber);
@@ -1066,27 +1075,32 @@ void PHY_RxFrameCallback(PHY_FrameInfo_t *rxFrame)
 //        SYS_CONSOLE_PRINT("%c",recBuffer[i]);
 //    }
 //    SYS_CONSOLE_MESSAGE("\n"); 
-    SYS_CONSOLE_PRINT("RX: ");
-    for(uint8_t i = 0; i<payloadLength; i++)
-    {
-        SYS_CONSOLE_PRINT("%02X ",recBuffer[i]);
-    }
-    SYS_CONSOLE_MESSAGE("\r\n");
+
     
     appData.last_message = xTaskGetTickCount();
     
     deviceTable[SOURCE_DEV_INDEX].rxPacketCnt  +=  1U;
     deviceTable[SOURCE_DEV_INDEX].lqi = LQI;
     deviceTable[SOURCE_DEV_INDEX].rssiVal = recRSSI;
-
+        p_appMes->msgId = (uint8_t)APP_PACKET_DISP_EVENT;
+        p_appMes->msgData[0] = payloadLength;
+        for(int8_t i = 0; i<((int8_t)payloadLength); i++)
+        {
+            p_appMes->msgData[i+1] = recBuffer[i]; 
+        }
+        osalResult = OSAL_QUEUE_Send(&appData.appQueue, p_appMes, 0);     
+        osalResult = osalResult;
 //    SYS_CONSOLE_PRINT("\r\nLQI:%i", LQI);    
 //    SYS_CONSOLE_PRINT("\r\nRSSI:%i", recRSSI);
 //    SYS_CONSOLE_PRINT("\r\nPKTCNT:");
 //    SYS_CONSOLE_PRINT("%8x\n",deviceTable[SOURCE_DEV_INDEX].rxPacketCnt);
 //    SYS_CONSOLE_MESSAGE("\r\n");
 
-    PHY_TrxState_t trxState = PHY_STATE_RX_ON; //MicrochipModification 
-    PHY_RxEnable(trxState);//MicrochipModification 
+// Disabling this modification.  
+// Enabling the transceiver alone doesn't seem to help, but DISABLING it first does
+// I'm disabling every 5 minutes in the app tasks now as a preventative measure
+//    PHY_TrxState_t trxState = PHY_STATE_RX_ON; //MicrochipModification 
+//    PHY_RxEnable(trxState);//MicrochipModification 
     // JOE EDIT OR ADDITION END
 }
 

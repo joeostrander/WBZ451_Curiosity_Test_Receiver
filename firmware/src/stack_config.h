@@ -92,8 +92,8 @@
 /*
  * Configuration of Large and Small Buffers Used in Radio Layer
  */
-#define NUMBER_OF_LARGE_PHY_BUFS          (3U)
-#define NUMBER_OF_SMALL_PHY_BUFS          (3U)
+#define NUMBER_OF_LARGE_PHY_BUFS          (20U)    // JOE EDIT OR ADDITION
+#define NUMBER_OF_SMALL_PHY_BUFS          (20U)    // JOE EDIT OR ADDITION
 
 /* === TYPES =============================================================== */
 

@@ -109,6 +109,7 @@ static void phy_ConfigAntennaDiversity(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, ch
 static void phy_ConfigRxRPCMode(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
 static void update_PER_test_packets(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
 static void throughput_timer_update(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
+static void debugrx(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv);
 //CMD descriptor table definition
 static const SYS_CMD_DESCRIPTOR PhyCmdsTbl[] =
 {
@@ -167,6 +168,7 @@ static const SYS_CMD_DESCRIPTOR PhyCmdsTbl[] =
     {"configAntennaDiversity",phy_ConfigAntennaDiversity,"Configure the Antenna Diversity\r\n"},
     {"updateThroughputTime",throughput_timer_update,"Update Throughput Timer\r\n"},
     {"updatePERTestPacketsCnt",update_PER_test_packets,"Update PER test Packets\r\n"},
+    {"debugrx",debugrx,"show/hide rx packet data\r\n"},
 };
 
 
@@ -1816,5 +1818,22 @@ void appPhyCmdProcessor_calculateDevicePerfParams(void)
     else
     {
         //do nothing
+    }
+}
+
+static void debugrx(SYS_CMD_DEVICE_NODE* pCmdIO, int argc, char** argv)
+{
+    if(argc<2)
+    {
+        SYS_CONSOLE_PRINT("usage: %s true/false\r\n", argv[1]);
+        return;
+    }
+    
+    
+    bool blah;
+    if(appPhyCmdProcessor_StrToBool(argv[1], &blah))
+    {
+        appData.debug_rx = blah;
+        SYS_CONSOLE_PRINT("RX Debug: %s\r\n", blah ? "ON":"OFF");
     }
 }
