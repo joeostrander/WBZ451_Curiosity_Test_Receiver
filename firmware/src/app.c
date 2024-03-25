@@ -55,6 +55,8 @@
 #include "app.h"
 #include "definitions.h"
 
+// Uncomment to add a workaround for the issue where it stops receiving
+//#define BIG_HAMMER
 
 // *****************************************************************************
 // *****************************************************************************
@@ -166,6 +168,8 @@ void APP_Tasks ( void )
         case APP_STATE_SERVICE_TASKS:
         {
             // JOE EDIT OR ADDITION START
+            TickType_t current_ticks = xTaskGetTickCount();
+            
 //            if (OSAL_QUEUE_Receive(&appData.appQueue, &appMsg, OSAL_WAIT_FOREVER))
             if (OSAL_QUEUE_Receive(&appData.appQueue, &appMsg, 1))
             {
@@ -183,17 +187,20 @@ void APP_Tasks ( void )
                 } 
             }
             
+#ifdef BIG_HAMMER
             // HAMMERTIME... disable & re-enable PHY every 5 minutes
-            TickType_t current_time = xTaskGetTickCount();
             static TickType_t last_phy_off = 0;
-            if (current_time - last_phy_off > 300000)
+            if (current_ticks - last_phy_off > 300000)
             {
-                last_phy_off = current_time;
+                last_phy_off = current_ticks;
                 SYS_CONSOLE_PRINT("Toggle PHY...\r\n");
                 PHY_RxEnable(PHY_STATE_TRX_OFF);
+                
+                // re-enables automatically on next loop
             }
+#endif
             
-            TickType_t current_ticks = xTaskGetTickCount();
+            
             static TickType_t last_toggle = 0;
             if (current_ticks - appData.last_message < 100)
             {
